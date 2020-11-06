@@ -48,15 +48,14 @@ function drawCanvas(ctx, results) {
 }
 
 
-function drawResultsBar(ctx, results){
+function drawResultsBar(ctx, results, width, height, margin){
   if (results){
-      const totalWidth = 800
       const totalYes = results.reduce((acc, val) => acc + val.yes, 0) 
       const totalNo = results.reduce((acc, val) => acc + val.no, 0)
       const yesFactor = totalYes / (totalYes + totalNo)
       const noFactor = totalNo / (totalYes + totalNo) 
-      drawRectangle(ctx, 20,20, totalWidth * yesFactor, 60, "green")
-      drawRectangle(ctx, 20 + totalWidth* yesFactor, 20, totalWidth * noFactor, 60, "red");
+      drawRectangle(ctx, margin, margin, width * yesFactor, height, "green")
+      drawRectangle(ctx, margin + width* yesFactor, margin, width * noFactor, height, "red");
   }
 }
 
@@ -67,5 +66,26 @@ function drawRectangle(ctx, x,y,width,height, color){
   ctx.fill()
 }
 
+function drawPie(ctx, yes, total, size, margin){
+  const center  = margin + size/2
+  ctx.beginPath()
+  ctx.moveTo(center,center);
+  ctx.lineTo(margin + size, center);
+  ctx.arc(center,center, size/2, 0, 2 * Math.PI * yes / total)
+  ctx.closePath()
+  ctx.fillStyle = "green"
+  ctx.fill()
+  if (yes < total){
+      ctx.beginPath()
+      ctx.moveTo(center, center)
+      ctx.lineTo(center + Math.cos(2 * Math.PI * yes/total) * size/2, center + Math.sin(2 * Math.PI * yes / total)*size/2)
+      ctx.arc(center,center,size/2 , 2*Math.PI * yes / total, 2* Math.PI)
+      ctx.closePath()
+      ctx.fillStyle = "red"
+      ctx.fill()
+  }
+  
+}
 
-export { drawCanvas, drawResultsBar };
+
+export { drawCanvas, drawResultsBar, drawPie };

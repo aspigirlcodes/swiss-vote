@@ -1,0 +1,51 @@
+html body{
+    font-family: sans-serif;
+}
+.dashboard-component{
+    border: 1px solid #ccc;
+    border-radius: 10px; 
+    display: inline-block;
+    margin: 10px;
+    padding: 10px;
+}
+
+.dashboard-table{
+    display: block;
+}
+
+.dashboard-component h2{
+    color: #333;
+    font-weight: 300;
+    text-align: center;
+}
+
+#form {
+    background-color: lightcoral;
+    padding: 10px;
+    margin: 10px;
+}
+
+h1 {
+    margin: 10px;
+    color: #333;
+    font-weight: 300;
+}
+
+label{
+    display: block;
+    font-weight: 300;
+    margin: 10px;
+}
+
+button{
+    background-color: lightgrey;
+    border: 1px solid darkgray;
+    padding: 10px;
+    margin: 10px;
+    font-size: 1rem;
+}
+
+#dashboard {
+    display: flex;
+    flex-wrap: wrap;
+}
