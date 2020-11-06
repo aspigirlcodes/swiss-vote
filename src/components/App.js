@@ -30,18 +30,18 @@ class App extends React.Component {
       error => console.error("FetchError: ", error))
   }
 
-  handleChange(event){
-    this.setState({ selectedVote: event.target.value });
+  handleChange(selection){
+    this.setState({ selectedVote: selection });
   }
 
   render(){
-    const selectedResult = this.state.results[this.state.selectedVote]
+    
     return (
       <div>
         <div id="form">
-          <Selector options={this.state.results} value={this.state.selectedVote} onChange={this.handleChange}/>
+          <Selector options={this.state.results} selectedVote={this.state.selectedVote} onChange={this.handleChange}/>
         </div>
-        <Dashboard {... selectedResult}>
+        <Dashboard {... this.state.selectedVote}>
           <TotalResultBar />  
           <Map>
             <ResultsTable/>
