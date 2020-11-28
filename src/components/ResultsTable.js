@@ -1,10 +1,12 @@
-import React from "react"
+import React, {useContext} from "react"
+import ResultContext from "../context"
 
-
-function ResultsTable(props){
+function ResultsTable(){
+    const {selectedVote1, selectedCanton} = useContext(ResultContext);
+    const {description, results} = selectedVote1
     return(
         <table>
-            <caption>{props.description && props.description.en}</caption>
+            <caption>{description && description.en}</caption>
             <thead>
                 <tr>
                     <td>Canton</td>
@@ -16,8 +18,8 @@ function ResultsTable(props){
                 </tr>
             </thead>
             <tbody>
-            {props.results && props.results.map(result => (
-                <tr key={result.canton}>
+            {results && results.map(result => (
+                <tr className={selectedCanton && result.canton === selectedCanton.canton ? "selected" : ""} key={result.canton}>
                     <td>{result.canton}</td>
                     <td>{result.yes}</td>
                     <td>{result.no}</td>

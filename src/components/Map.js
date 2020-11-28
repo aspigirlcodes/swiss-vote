@@ -1,34 +1,27 @@
-import React from "react";
-import { drawCanvas } from "../helpers"
+import React, {useContext} from "react";
+import { drawSvg } from "../helpers"
+import ResultContext from "../context"
 
 
-
-class Map extends React.Component {
-    
-    componentDidMount() {
-        this.ctx = this.refs.canvas.getContext("2d");
-        drawCanvas(this.ctx, this.props.results);
-    }
-    
-    componentDidUpdate() {
-        this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-        drawCanvas(this.ctx, this.props.results);
-    }
-    
-    
-    render(){
-        const { description, results } = this.props;
-        return (
-            <div class="dashboard-component">
-                <h2>Map</h2>
-                <canvas height={538} width={840} ref="canvas">
-                    {React.cloneElement(this.props.children, { description, results })}
-                </canvas>
-            </div>
+function Map(props) {
+    const {selectedVote1, setSelectedCanton} = useContext(ResultContext);
+    const {description, results} = selectedVote1
+    return (
+        <div className="dashboard-component">
             
-        );
-    }
-  
+            <h2>Map</h2>
+            
+        
+            <svg height={538} width={840}>
+                {drawSvg(results, (result) => result && setSelectedCanton(result))}
+                {React.cloneElement(props.children, { description, results })}
+            </svg>
+            
+            <p className="align-right"> Click a canton to see its results</p>
+        </div>
+        
+    );
 }
+
 
 export default Map;

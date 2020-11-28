@@ -49,3 +49,11 @@ button{
     display: flex;
     flex-wrap: wrap;
 }
+
+.selected {
+    background-color: cornflowerblue;
+}
+
+.align-right {
+    text-align: right;
+}

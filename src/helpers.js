@@ -1,3 +1,4 @@
+import React from "react"
 import paths from "./map-paths"; // contains the paths for drawing the map
 
 function drawPath(ctx, { d, fill }) {
@@ -47,6 +48,18 @@ function drawCanvas(ctx, results) {
   ctx.translate(0, 68.5); // toDo: crop the SVG so that this isn't necessary
 }
 
+function drawSvg(results, onclick) {
+  const pathElements = paths.map(path => {
+    // loop it by path because there isn't always data for each canton
+    const canton = path.canton; // get the canton code from the paths array
+    const result = results ? results.find(x => x.canton === canton) : null; // get the results that correspond to the canton code
+    const specifications = getSpecs(path, result); // { path, fill, alpha, yes, no }
+    return <path key={canton} d={specifications.d} stroke="black"
+  strokeWidth="1" fill={specifications.fill} fillOpacity={specifications.alpha} onClick={() => onclick(result)}><title>{canton}</title></path>
+  })
+  return <g transform="translate(0,-68.5)"> {pathElements} </g>
+}
+
 
 function drawResultsBar(ctx, results, width, height, margin){
   if (results){
@@ -58,6 +71,18 @@ function drawResultsBar(ctx, results, width, height, margin){
       drawRectangle(ctx, margin + width* yesFactor, margin, width * noFactor, height, "red");
   }
 }
+
+function drawCantonResultsBar(ctx, results, width, height, margin){
+  if (results){
+      const totalYes = results.yes
+      const totalNo = results.no
+      const yesFactor = totalYes / (totalYes + totalNo)
+      const noFactor = totalNo / (totalYes + totalNo) 
+      drawRectangle(ctx, margin, margin, width * yesFactor, height, "green")
+      drawRectangle(ctx, margin + width* yesFactor, margin, width * noFactor, height, "red");
+  }
+}
+
 
 function drawRectangle(ctx, x,y,width,height, color){
   ctx.beginPath()
@@ -88,4 +113,4 @@ function drawPie(ctx, yes, total, size, margin){
 }
 
 
-export { drawCanvas, drawResultsBar, drawPie };
+export { drawCanvas, drawSvg, drawResultsBar,drawCantonResultsBar, drawPie };

@@ -1,39 +1,55 @@
-import React from "react";
+import React, { useRef, useContext, useEffect } from "react";
+import ResultContext from "../context"
+import { drawResultsBar, drawCantonResultsBar } from "../helpers"
 
-import { drawResultsBar } from "../helpers"
 
+function TotalResultsBar({width, height, margin}){
+    const {selectedVote1, selectedCanton} = useContext(ResultContext);
+    const {results} = selectedVote1
+    const totalYes = results ? results.reduce((acc, val) => acc + val.yes, 0) : 0
+    const totalNo = results ? results.reduce((acc, val) => acc + val.no, 0) : 0
+    const canvasRef = useRef()
+    const cantonCanvas = useRef()
 
-class TotalResultsBar extends React.Component {
-    
-    componentDidMount() {
-        this.ctx = this.refs.canvas.getContext("2d");
-        drawResultsBar(this.ctx, this.props.results, this.props.width, this.props.height, this.props.margin)
-         
-    }
-    
-    componentDidUpdate() {
-        this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-        drawResultsBar(this.ctx, this.props.results, this.props.width, this.props.height, this.props.margin)
-    }
-    
-    
-    render(){
-        const totalYes = this.props.results ? this.props.results.reduce((acc, val) => acc + val.yes, 0) : 0
-        const totalNo = this.props.results ? this.props.results.reduce((acc, val) => acc + val.no, 0) : 0
-        return (
-            <div class="dashboard-component">
-                <h2>Total Results</h2>
-                <canvas height={this.props.height + 2 * this.props. margin} width={this.props.width + 2 * this.props.margin} ref="canvas"></canvas>
-                <div style={{width: this.props.width, paddingLeft: this.props.margin}}>
-                <span>Yes: {totalYes && (totalYes / (totalYes + totalNo) * 100).toFixed(2)},</span>    
-                <span style={{float: "right"}}>No: {totalNo && (totalNo /(totalYes + totalNo) * 100).toFixed(2)}</span> 
-                
-                </div>
-            </div>
+    useEffect(()=>{
+        const ctx = canvasRef.current.getContext("2d");
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        drawResultsBar(ctx, results, width, height, margin)
+        if (cantonCanvas.current){
+            const cantonCtx = cantonCanvas.current.getContext("2d");
+            cantonCtx.clearRect(0, 0, cantonCtx.canvas.width, cantonCtx.canvas.height);
+            drawCantonResultsBar(cantonCtx, selectedCanton, width, height, margin)
+        }
+        
+    })
+
+    return (
+        <div className="dashboard-component">
+            <h2>Total Results</h2>
+            <canvas height={height + 2 * margin} width={width + 2 * margin} ref={canvasRef}></canvas>
+            <div style={{width: width, paddingLeft: margin}}>
+            <span>Yes: {totalYes && (totalYes / (totalYes + totalNo) * 100).toFixed(2)},</span>    
+            <span style={{float: "right"}}>No: {totalNo && (totalNo /(totalYes + totalNo) * 100).toFixed(2)}</span> 
             
-        );
-    }
-  
+            </div>
+                {selectedCanton &&
+                    <div>
+                        <h2>{selectedCanton.canton} Results</h2>
+                        <canvas height={height + 2 * margin} width={width + 2 * margin} ref={cantonCanvas}></canvas>
+                        <div style={{width: width, paddingLeft: margin}}>
+                        <span>Yes: {selectedCanton && (selectedCanton.yes / (selectedCanton.yes + selectedCanton.no) * 100).toFixed(2)},</span>    
+                        <span style={{float: "right"}}>No: {selectedCanton && (selectedCanton.no /(selectedCanton.yes + selectedCanton.no) * 100).toFixed(2)}</span> 
+                        
+                        </div>
+
+                    </div>
+                    
+                }
+        </div>
+        
+    );
+
 }
+
 
 export default TotalResultsBar;

@@ -5,6 +5,7 @@ import ToggleTableView from "./ToggleTableView"
 import TotalResultBar from "./TotalResultsBar"
 import ResultsTable from "./ResultsTable"
 import CantonPie from "./CantonPie"
+import ResultContext from "../context"
 
 
 function Dashboard(props){
@@ -19,9 +20,11 @@ function Dashboard(props){
 
 class App extends React.Component {
   handleChange = this.handleChange.bind(this)
+  setCanton = this.setCanton.bind(this)
   state = {
     results : [],
-    selectedVote: null
+    selectedVote: null,
+    selectedCanton: null,
   };
 
   componentDidMount(){
@@ -35,10 +38,15 @@ class App extends React.Component {
     this.setState({ selectedVote: event.target.value });
   }
 
+  setCanton (canton) {
+    this.setState({selectedCanton:canton})
+  }
+
   render(){
     const selectedResult = this.state.results[this.state.selectedVote]
     return (
-      <div>
+      <ResultContext.Provider value={{selectedVote1: {... selectedResult}, selectedCanton: this.state.selectedCanton, setSelectedCanton: this.setCanton}}>
+
         <h1>Swiss vote Dashboard</h1>
         <div id="form">
           <Selector options={this.state.results} value={this.state.selectedVote} onChange={this.handleChange}/>
@@ -51,10 +59,10 @@ class App extends React.Component {
           </Map>
           <ToggleTableView/>
         </Dashboard>
-      </div>
+      </ResultContext.Provider>
     );
   }
   
 }
 
-export default App;
+export {App, ResultContext };
