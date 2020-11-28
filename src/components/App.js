@@ -1,4 +1,4 @@
-import React from "react";
+import React, { cloneElement } from "react";
 import Selector from "./Selector";
 import Map from "./Map";
 import ToggleTableView from "./ToggleTableView"
@@ -12,18 +12,20 @@ function Dashboard(props){
   const { description, results } = props
   return (
     <div id="dashboard">
-      {props.children.map( child => React.cloneElement(child, { description, results }))}
+      {props.children.map( (child, key) => (<div className="dashboard-row"> {[0,1].map(a => cloneElement(child, { index: a, key }))}</div>))}
     </div>
   )
 }
 
 
 class App extends React.Component {
-  handleChange = this.handleChange.bind(this)
+  handleSelect = this.handleSelect.bind(this)
+  handleCompare = this.handleCompare.bind(this)
   setCanton = this.setCanton.bind(this)
   state = {
     results : [],
     selectedVote: null,
+    compareVote: null,
     selectedCanton: null,
   };
 
@@ -34,8 +36,12 @@ class App extends React.Component {
       error => console.error("FetchError: ", error))
   }
 
-  handleChange(event){
+  handleSelect(event){
     this.setState({ selectedVote: event.target.value });
+  }
+
+  handleCompare(event){
+    this.setState({ compareVote: event.target.value });
   }
 
   setCanton (canton) {
@@ -44,20 +50,22 @@ class App extends React.Component {
 
   render(){
     const selectedResult = this.state.results[this.state.selectedVote]
+    const compareResult = this.state.results[this.state.compareVote]
     return (
-      <ResultContext.Provider value={{selectedVote1: {... selectedResult}, selectedCanton: this.state.selectedCanton, setSelectedCanton: this.setCanton}}>
+      <ResultContext.Provider value={{selectedVote: [{...selectedResult}, {...compareResult}], selectedCanton: this.state.selectedCanton, setSelectedCanton: this.setCanton}}>
 
         <h1>Swiss vote Dashboard</h1>
         <div id="form">
-          <Selector options={this.state.results} value={this.state.selectedVote} onChange={this.handleChange}/>
+          <Selector label="Select a Vote to see the result" options={this.state.results} value={this.state.selectedVote} onChange={this.handleSelect}/>
+          <Selector label="Select a Vote to compare" options={this.state.results} value={this.state.compareVote} onChange={this.handleCompare}/>
         </div>
-        <Dashboard {... selectedResult}>
+        <Dashboard>
           <TotalResultBar width={800} height={60} margin={20}/> 
-          <CantonPie size={300} margin={20}/> 
           <Map>
             <ResultsTable/>
           </Map>
-          <ToggleTableView/>
+          <CantonPie size={300} margin={20}/> 
+          <ToggleTableView />
         </Dashboard>
       </ResultContext.Provider>
     );

@@ -112,5 +112,13 @@ function drawPie(ctx, yes, total, size, margin){
   
 }
 
+function shortenDescription(descriptionObj){
+  if (descriptionObj){
+    if (descriptionObj.en.length >30){
+      return descriptionObj.en.substring(0, 30) + "..."
+    }
+    return descriptionObj.en
+  }
+}
 
-export { drawCanvas, drawSvg, drawResultsBar,drawCantonResultsBar, drawPie };
+export { drawCanvas, drawSvg, drawResultsBar,drawCantonResultsBar, drawPie, shortenDescription};

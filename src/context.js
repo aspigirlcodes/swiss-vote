@@ -1,5 +1,5 @@
 import React from "react"
 
-const ResultContext = React.createContext({selectedVote1: null, selectedVote2: null, selectedCanton: null, setSelectedCanton: () => {}});
+const ResultContext = React.createContext({selectedVote: null, selectedVote2: null, selectedCanton: null, setSelectedCanton: () => {}});
 
 export default ResultContext

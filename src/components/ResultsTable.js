@@ -1,9 +1,9 @@
 import React, {useContext} from "react"
 import ResultContext from "../context"
 
-function ResultsTable(){
-    const {selectedVote1, selectedCanton} = useContext(ResultContext);
-    const {description, results} = selectedVote1
+function ResultsTable({index}){
+    const {selectedVote, selectedCanton} = useContext(ResultContext);
+    const {description, results} = selectedVote[index]
     return(
         <table>
             <caption>{description && description.en}</caption>
@@ -19,7 +19,7 @@ function ResultsTable(){
             </thead>
             <tbody>
             {results && results.map(result => (
-                <tr className={selectedCanton && result.canton === selectedCanton.canton ? "selected" : ""} key={result.canton}>
+                <tr className={result.canton === selectedCanton ? "selected" : ""} key={result.canton}>
                     <td>{result.canton}</td>
                     <td>{result.yes}</td>
                     <td>{result.no}</td>

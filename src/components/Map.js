@@ -1,20 +1,20 @@
 import React, {useContext} from "react";
-import { drawSvg } from "../helpers"
+import { drawSvg, shortenDescription } from "../helpers"
 import ResultContext from "../context"
 
 
 function Map(props) {
-    const {selectedVote1, setSelectedCanton} = useContext(ResultContext);
-    const {description, results} = selectedVote1
+    const {selectedVote, setSelectedCanton} = useContext(ResultContext);
+    const {description, results} = selectedVote[props.index]
     return (
         <div className="dashboard-component">
             
-            <h2>Map</h2>
+            <h2>Map ({shortenDescription(description)})</h2>
             
         
             <svg height={538} width={840}>
-                {drawSvg(results, (result) => result && setSelectedCanton(result))}
-                {React.cloneElement(props.children, { description, results })}
+                {drawSvg(results, (result) => result && setSelectedCanton(result.canton))}
+                {React.cloneElement(props.children, props)}
             </svg>
             
             <p className="align-right"> Click a canton to see its results</p>
