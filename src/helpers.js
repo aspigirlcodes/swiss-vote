@@ -112,6 +112,53 @@ function drawPie(ctx, yes, total, size, margin){
   
 }
 
+function prepareCorrelationData([firstData, secondData]){
+  const firstResults = firstData.results 
+  const firstDescription = firstData.description ? firstData.description.en : "" 
+  const secondResults = secondData.results
+  const secondDescription = secondData.description ? secondData.description.en : ""
+  if (firstResults && secondResults){
+
+      const results = firstResults.map(result => {
+          let secondResult = secondResults.find(a => a.canton === result.canton)
+          let firstTotal = result.yes + result.no
+          if (!secondResult){
+            return null
+          }
+          let secondTotal = secondResult.yes + secondResult.no
+
+          return{
+              canton:result.canton, 
+              firstYes: result.yes/ firstTotal,
+              firstTotal,
+              secondYes: secondResult.yes/secondTotal,
+              secondTotal 
+          }
+      }).filter(value => value)
+      return {descriptions: [firstDescription, secondDescription], data: results}
+  }
+}
+
+function drawCorrelation(ctx, selectedVotes, size, margin){
+  const data = prepareCorrelationData(selectedVotes)
+
+  ctx.beginPath()
+  ctx.moveTo(margin,margin);
+  ctx.lineTo(margin, margin + size);
+  ctx.lineTo(margin + size, margin + size)
+  ctx.stroke()
+  ctx.font = "12px Arial";
+
+  if (data){
+    data.data.forEach(dataPoint => {
+      ctx.fillRect(margin + dataPoint.firstYes * size, margin +  (1 - dataPoint.secondYes) * size, 2,2)
+      ctx.fillText(dataPoint.canton, margin + dataPoint.firstYes * size, margin +  (1 - dataPoint.secondYes) * size);
+    })
+  }
+
+}
+
+
 function shortenDescription(descriptionObj){
   if (descriptionObj){
     if (descriptionObj.en.length >30){
@@ -121,4 +168,4 @@ function shortenDescription(descriptionObj){
   }
 }
 
-export { drawCanvas, drawSvg, drawResultsBar,drawCantonResultsBar, drawPie, shortenDescription};
+export { drawCanvas, drawSvg, drawResultsBar,drawCantonResultsBar, drawPie, drawCorrelation, shortenDescription};

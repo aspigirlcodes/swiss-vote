@@ -6,6 +6,7 @@ import TotalResultBar from "./TotalResultsBar"
 import ResultsTable from "./ResultsTable"
 import CantonPie from "./CantonPie"
 import ResultContext from "../context"
+import CorrelationGraph from "./CorrelationGraph";
 
 
 function Dashboard(props){
@@ -67,6 +68,7 @@ class App extends React.Component {
           <CantonPie size={300} margin={20}/> 
           <ToggleTableView />
         </Dashboard>
+        <CorrelationGraph/>
       </ResultContext.Provider>
     );
   }
